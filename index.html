@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,76 +40,83 @@
 
     <header>
         <div>TERMINAL_ID: MET_ANALYST_01 // CORE_SANDBOX_V1.2</div>
-        <div style="color: #38bdf8;">MODE: DYNAMIC_GLOBAL_SANDBOX</div>
+        <div style="color: #38bdf8;">MODO: DYNAMIC_GLOBAL_SANDBOX</div>
         <div>Z-TIME: <span id="sys-clock">00:00:00</span></div>
     </header>
 
     <main>
-        <!-- PAINEL DE CONTROLE NUMÉRICO PRECISO -->
+        <!-- CAMADA INJETORA ATMOSFÉRICA -->
         <section id="control-panel" class="panel">
-            <div class="panel-header">ATMOSPHERIC INJECTOR LAYER</div>
+            <div class="panel-header">CAMADA INJETORA ATMOSFÉRICA</div>
             <div class="panel-content">
                 
-                <div class="menu-title">GLOBAL TARGET SECTOR:</div>
+                <div class="menu-title">SETOR-ALVO GLOBAL:</div>
                 <select id="location-select" onchange="alterarLocalizacao()">
-                    <option value="KOUN">Norman, Oklahoma (USA) [OUN]</option>
-                    <option value="SBGL">Rio de Janeiro (Brazil) [Galeão]</option>
-                    <option value="KJAN">Jackson, Mississippi (USA) [JAN]</option>
-                    <option value="EDDF">Frankfurt (Germany) [ICON Grid]</option>
+                    <option value="KOUN">Norman, Oklahoma (EUA) [OUN]</option>
+                    <option value="SBGL">Rio de Janeiro (Brasil) [Galeão]</option>
+                    <option value="KJAN">Jackson, Mississippi (EUA) [JAN]</option>
+                    <option value="EDDF">Frankfurt (Alemanha) [ICON Grid]</option>
                 </select>
 
-                <div class="menu-title">SURFACE BOUNDARY PARAMETERS:</div>
+                <div class="menu-title">PARÂMETROS DE CONTORNO DA SUPERFÍCIE:</div>
                 
                 <div class="input-group">
-                    <label>TEMPERATURE (°C):</label>
-                    <input type="number" id="input-temp" class="num-input" value="24.3" step="0.1" onchange="atualizarSimulacao()">
+                    <label>TEMPERATURA (°C):</label>
+                    <!-- Ajustado o ID para "input-temp" e a chamada para "atualizarSimulacao()" -->
+                    <input type="number" id="input-temp" class="num-input" value="24.3" step="0.1" oninput="atualizarSimulacao()">
                 </div>
 
                 <div class="input-group">
-                    <label>DEWPOINT (°C):</label>
-                    <input type="number" id="input-dew" class="num-input" value="17.8" step="0.1" onchange="atualizarSimulacao()">
+                    <label>PONTO DE ORVALHO (°C):</label>
+                    <!-- Ajustado o ID para "input-dew" e a chamada para "atualizarSimulacao()" -->
+                    <input type="number" id="input-dew" class="num-input" value="17.8" step="0.1" oninput="atualizarSimulacao()">
                 </div>
 
-                <div class="menu-title">KINEMATIC BOUNDARY VECTORS:</div>
+                <div class="menu-title">VETORES DE CONTORNO CINEMÁTICO:</div>
                 
                 <div class="input-group">
-                    <label>0-6km SHEAR (KTS):</label>
-                    <input type="number" id="input-shear" class="num-input" value="45.0" step="1" onchange="atualizarSimulacao()">
+                    <label>Cisalhamento de 0-6km (kts):</label>
+                    <!-- Ajustado o ID para "input-shear" e a chamada para "atualizarSimulacao()" -->
+                    <input type="number" id="input-shear" class="num-input" value="45.0" step="1" oninput="atualizarSimulacao()">
                 </div>
 
-                <div class="menu-title">ACTIVE NUMERICAL FORECAST SUITE:</div>
+                <div class="menu-title">CONJUNTO DE PREVISÕES NUMÉRICAS ATIVAS:</div>
+                <!-- Ajustado o ID para "model-select" -->
                 <select id="model-select" onchange="atualizarSimulacao()">
                     <option value="hrrr">HRRR [CONVECTIVE_HIGH_RES]</option>
                     <option value="monan">MONAN [BRAZILIAN_GLOBAL]</option>
                     <option value="gfs">GFS [GLOBAL_DETERMINISTIC]</option>
                 </select>
                 
-                <button id="btn-verify" class="verify-btn">
-                    LAUNCH RADIOSONDE BALLOON (VERIFY)
+                <button id="btn-verify" class="verify-btn" onclick="atualizarSimulacao()">
+                    LANÇAMENTO DE BALÃO DE RADIOSONDA (VERIFICAR)
                 </button>
             </div>
         </section>
 
-        <!-- OUTLOOK MAP / TEXT OVERLAY -->
+        <!-- PARÂMETROS DE PREVISÃO CONVECTIVA DINÂMICA -->
         <section id="map-view" class="panel">
-            <div class="panel-header">DYNAMIC CONVECTIVE OUTLOOK PARAMETERS</div>
+            <div class="panel-header">PARÂMETROS DE PREVISÃO CONVECTIVA DINÂMICA</div>
             <div class="panel-content" style="display: flex; flex-direction: column; gap: 15px;">
-                <div id="outlook-risk-badge" style="padding: 10px; text-align: center; font-weight: bold; font-size: 14px; letter-spacing: 2px; color: #000; background-color: #222;">
-                    CALCULATING RISK...
+                <!-- Ajustado o ID para "outlook-risk-badge" -->
+                <div id="outlook-risk-badge" style="padding: 10px; text-align: center; font-weight: bold; font-size: 14px; letter-spacing: 2px; color: #64748b; background-color: #0c1017; border: 1px solid #1e293b;">
+                    CALCULANDO O RISCO...
                 </div>
                 <div style="border: 1px solid #1e293b; padding: 10px; background-color: #0c1017; font-size: 11px; line-height: 1.4;">
-                    <p style="color: #64748b; font-weight: bold; margin-bottom: 5px;">PROBABILITY MATRIX:</p>
+                    <p style="color: #64748b; font-weight: bold; margin-bottom: 5px;">MATRIZ DE PROBABILIDADE:</p>
+                    <!-- Ajustado o ID para "outlook-probs" -->
                     <div id="outlook-probs"></div>
                 </div>
+                <!-- Ajustado o ID para "outlook-text" -->
                 <div style="flex: 1; border: 1px solid #1e293b; padding: 12px; background-color: #020406; font-size: 12px; line-height: 1.6; color: #94a3b8; overflow-y: auto;" id="outlook-text">
-                    [DIAGNOSING ENVIRONMENT...]
+                    [DIAGNÓSTICO DO AMBIENTE...]
                 </div>
             </div>
         </section>
 
         <!-- SHARPPY DIAGNOSTIC PROFILE -->
         <section id="sharppy-view" class="panel">
-            <div class="panel-header">SHARPpy SOUNDING ENGINE</div>
+            <div class="panel-header">MOTOR COM SOM NITIDO</div>
             <div class="panel-content" style="display: flex; flex-direction: column; gap: 10px; padding: 5px;">
                 <div class="canvas-container" style="height: 65%;">
                     <canvas id="skewtCanvas"></canvas>
@@ -120,19 +127,19 @@
             </div>
         </section>
 
-        <!-- SYSTEM LOGS -->
+        <!-- REGISTROS DO SISTEMA -->
         <section id="telemetry-log" class="panel">
-            <div class="panel-header">SYSTEM LOGS & DATASTREAM LOG</div>
+            <div class="panel-header">REGISTROS DO SISTEMA E REGISTRO DE FLUXO DE DADOS</div>
             <div class="panel-content">
+                <!-- Ajustado o ID para "log-container" -->
                 <ul class="log-list" id="log-container">
-                    <li><span class="log-timestamp">[00:00:01]</span> SANDBOX_ENGINE_V1.2: Numeric injector online.</li>
+                    <li><span class="log-timestamp">[00:00:01]</span> <span style="color:#00ff66;">SANDBOX_ENGINE_v1.2:</span> Injetor numérico online.</li>
                 </ul>
             </div>
         </section>
     </main>
 
     <script>
-        // Relógio global no padrão UTC/Z-TIME para estações meteorológicas
         function updateClock() {
             const now = new Date();
             document.getElementById('sys-clock').innerText = now.toISOString().substr(11, 8);
@@ -140,17 +147,15 @@
         setInterval(updateClock, 1000); 
         updateClock();
 
-        // Referências iniciais para os Canvas (Gráficos do SHARPpy)
         const skewCanvas = document.getElementById('skewtCanvas');
         const hodoCanvas = document.getElementById('hodoCanvas');
 
-        // Gerenciador de mudança de localidade do simulador
         function alterarLocalizacao() {
             console.log("[SYSTEM] Localidade alterada para: " + document.getElementById('location-select').value);
             atualizarSimulacao();
         }
 
-        // Função de disparo que se conecta com o motor no simulator.js
+        // Faz a ponte direta chamando o motor do simulator.js
         function atualizarSimulacao() {
             if (typeof updateSimulationEngine === "function") {
                 updateSimulationEngine();
@@ -158,7 +163,7 @@
         }
     </script>
 
-    <!-- INJEÇÃO DO MOTOR SERVERLESS DO GITHUB PAGES -->
+    <!-- ASSINATURA E CARREGAMENTO DO ARQUIVO EXTERNO NA RAIZ -->
     <script src="simulator.js"></script>
 </body>
 </html>
