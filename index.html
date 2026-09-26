@@ -8,7 +8,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; }
         body { background-color: #05070a; color: #00ff66; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
         header { background-color: #0c1017; border-bottom: 2px solid #1e293b; padding: 8px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; letter-spacing: 1px; }
-        main { display: grid; grid-template-columns: 300px 1fr 450px; grid-template-rows: 1fr 180px; height: calc(100vh - 33px); width: 100vw; background-color: #020406; }
+        main { display: grid; grid-template-columns: 340px 1fr 450px; grid-template-rows: 1fr 180px; height: calc(100vh - 33px); width: 100vw; background-color: #020406; }
         .panel { border: 1px solid #1e293b; background-color: #070a0f; display: flex; flex-direction: column; overflow: hidden; }
         .panel-header { background-color: #121824; color: #ffffff; padding: 6px 12px; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #1e293b; }
         .panel-content { padding: 12px; flex: 1; overflow-y: auto; font-size: 12px; }
@@ -16,55 +16,98 @@
         #map-view { grid-column: 2; grid-row: 1; }
         #sharppy-view { grid-column: 3; grid-row: 1 / 3; border-left: 2px solid #1e293b; background-color: #000000; }
         #telemetry-log { grid-column: 2; grid-row: 2; border-top: 2px solid #1e293b; }
-        .menu-title { color: #64748b; font-size: 10px; margin: 15px 0 5px 0; text-transform: uppercase; }
-        .selector-btn { display: block; width: 100%; background-color: #0c1017; border: 1px solid #1e293b; color: #8892b0; padding: 10px; margin-bottom: 8px; text-align: left; cursor: pointer; }
-        .selector-btn:hover, .selector-btn.active { border-color: #00ff66; color: #00ff66; background-color: #111827; }
-        select { width: 100%; background: #0c1017; color: #00ff66; border: 1px solid #1e293b; padding: 8px; font-family: monospace; outline: none; }
-        .display-box { width: 100%; height: 100%; border: 1px dashed #1e293b; display: flex; align-items: center; justify-content: center; color: #334155; font-size: 10px; text-align: center; }
+        
+        .menu-title { color: #64748b; font-size: 10px; margin: 12px 0 6px 0; text-transform: uppercase; font-weight: bold; }
+        
+        /* ESTILOS DOS INPUTS NUMÉRICOS */
+        .input-group { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; background: #0c1017; padding: 6px; border: 1px solid #1e293b; }
+        .input-group label { color: #8892b0; font-size: 11px; }
+        .num-input { background: #020406; border: 1px solid #334155; color: #00ff66; width: 80px; padding: 4px; text-align: center; font-family: monospace; }
+        .num-input:focus { border-color: #00ff66; outline: none; }
+        
+        select { width: 100%; background: #0c1017; color: #00ff66; border: 1px solid #1e293b; padding: 8px; font-family: monospace; outline: none; margin-bottom: 5px; }
         .canvas-container { width: 100%; background-color: #000000; border: 1px solid #1e293b; position: relative; }
         canvas { display: block; width: 100%; height: 100%; }
         .log-list { list-style: none; line-height: 1.5; font-size: 11px; }
         .log-timestamp { color: #64748b; }
         .log-alert { color: #ef4444; }
-        .log-data { color: #38bdf8; font-family: monospace; }
+        
+        .verify-btn { display: block; width: 100%; background-color: #0c1017; border: 1px solid #38bdf8; color: #38bdf8; padding: 10px; cursor: pointer; text-align: center; margin-top: 15px; }
+        .verify-btn:hover { background-color: #38bdf8; color: #000000; }
     </style>
 </head>
 <body>
 
     <header>
-        <div>TERMINAL_ID: MET_ANALYST_01 // CORE_V1.1</div>
-        <div style="color: #38bdf8;">MODE: DIAGNOSTIC_SINGLE_PLAYER</div>
+        <div>TERMINAL_ID: MET_ANALYST_01 // CORE_SANDBOX_V1.2</div>
+        <div style="color: #38bdf8;">MODE: DYNAMIC_GLOBAL_SANDBOX</div>
         <div>Z-TIME: <span id="sys-clock">00:00:00</span></div>
     </header>
 
     <main>
+        <!-- PAINEL DE CONTROLE NUMÉRICO PRECISO -->
         <section id="control-panel" class="panel">
-            <div class="panel-header">INITIALIZATION MATRIX</div>
+            <div class="panel-header">ATMOSPHERIC INJECTOR LAYER</div>
             <div class="panel-content">
-                <div class="menu-title">SELECT ENVIRONMENTAL VECTOR:</div>
-                <button class="selector-btn active" id="btn-case1">[CASE_01] HIGH_INSTABILITY_TORNADIC</button>
-                <button class="selector-btn" disabled>[CASE_02] LINEAR_MCS_SEVERE_WIND (LOCKED)</button>
-                <button class="selector-btn" disabled>[CASE_03] COLD_SEASON_LOW_CAPE (LOCKED)</button>
+                
+                <div class="menu-title">GLOBAL TARGET SECTOR:</div>
+                <select id="location-select" onchange="alterarLocalizacao()">
+                    <option value="KOUN">Norman, Oklahoma (USA) [OUN]</option>
+                    <option value="SBGL">Rio de Janeiro (Brazil) [Galeão]</option>
+                    <option value="KJAN">Jackson, Mississippi (USA) [JAN]</option>
+                    <option value="EDDF">Frankfurt (Germany) [ICON Grid]</option>
+                </select>
+
+                <div class="menu-title">SURFACE BOUNDARY PARAMETERS:</div>
+                
+                <div class="input-group">
+                    <label>TEMPERATURE (°C):</label>
+                    <input type="number" id="input-temp" class="num-input" value="24.3" step="0.1" onchange="atualizarSimulacao()">
+                </div>
+
+                <div class="input-group">
+                    <label>DEWPOINT (°C):</label>
+                    <input type="number" id="input-dew" class="num-input" value="17.8" step="0.1" onchange="atualizarSimulacao()">
+                </div>
+
+                <div class="menu-title">KINEMATIC BOUNDARY VECTORS:</div>
+                
+                <div class="input-group">
+                    <label>0-6km SHEAR (KTS):</label>
+                    <input type="number" id="input-shear" class="num-input" value="45.0" step="1" onchange="atualizarSimulacao()">
+                </div>
 
                 <div class="menu-title">ACTIVE NUMERICAL FORECAST SUITE:</div>
-                <select id="model-select">
+                <select id="model-select" onchange="atualizarSimulacao()">
                     <option value="hrrr">HRRR [CONVECTIVE_HIGH_RES]</option>
                     <option value="monan">MONAN [BRAZILIAN_GLOBAL]</option>
+                    <option value="gfs">GFS [GLOBAL_DETERMINISTIC]</option>
                 </select>
                 
-                <button id="btn-verify" class="selector-btn" style="margin-top: 30px; text-align: center; border-color: #38bdf8; color: #38bdf8;">
-                    ADVANCE TO VERIFICATION HOUR
+                <button id="btn-verify" class="verify-btn">
+                    LAUNCH RADIOSONDE BALLOON (VERIFY)
                 </button>
             </div>
         </section>
 
+        <!-- OUTLOOK MAP / TEXT OVERLAY -->
         <section id="map-view" class="panel">
-            <div class="panel-header">SPC CONVECTIVE OUTLOOK OVERLAY MAP</div>
-            <div class="panel-content">
-                <div class="display-box">[ VECTOR CONVECTIVE RISK MAP LAYER ]</div>
+            <div class="panel-header">DYNAMIC CONVECTIVE OUTLOOK PARAMETERS</div>
+            <div class="panel-content" style="display: flex; flex-direction: column; gap: 15px;">
+                <div id="outlook-risk-badge" style="padding: 10px; text-align: center; font-weight: bold; font-size: 14px; letter-spacing: 2px;">
+                    CALCULATING RISK...
+                </div>
+                <div style="border: 1px solid #1e293b; padding: 10px; background-color: #0c1017; font-size: 11px; line-height: 1.4;">
+                    <p style="color: #64748b; font-weight: bold; margin-bottom: 5px;">PROBABILITY MATRIX:</p>
+                    <div id="outlook-probs"></div>
+                </div>
+                <div style="flex: 1; border: 1px solid #1e293b; padding: 12px; background-color: #020406; font-size: 12px; line-height: 1.6; color: #94a3b8; overflow-y: auto;" id="outlook-text">
+                    [DIAGNOSING ENVIRONMENT...]
+                </div>
             </div>
         </section>
 
+        <!-- SHARPPY DIAGNOSTIC PROFILE -->
         <section id="sharppy-view" class="panel">
             <div class="panel-header">SHARPpy SOUNDING ENGINE</div>
             <div class="panel-content" style="display: flex; flex-direction: column; gap: 10px; padding: 5px;">
@@ -77,12 +120,12 @@
             </div>
         </section>
 
+        <!-- SYSTEM LOGS -->
         <section id="telemetry-log" class="panel">
             <div class="panel-header">SYSTEM LOGS & DATASTREAM LOG</div>
             <div class="panel-content">
                 <ul class="log-list" id="log-container">
-                    <li><span class="log-timestamp">[00:00:01]</span> CORE: Subsystems initialized safely.</li>
-                    <li><span class="log-timestamp">[00:00:02]</span> SHARPpy GRAPHICS ENGINE: Canvas mapped.</li>
+                    <li><span class="log-timestamp">[00:00:01]</span> SANDBOX_ENGINE_V1.2: Numeric injector online.</li>
                 </ul>
             </div>
         </section>
@@ -93,31 +136,7 @@
             const now = new Date();
             document.getElementById('sys-clock').innerText = now.toISOString().substr(11, 8);
         }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        const cenarioAtivo = "caso_01_oklahoma";
-        let dadosModeloAtual = [];
-
-        function adicionarLog(texto, tipo = "") {
-            const container = document.getElementById('log-container');
-            const li = document.createElement('li');
-            const timestamp = `[${new Date().toISOString().substr(11, 8)}] `;
-            
-            const spanTime = document.createElement('span');
-            spanTime.className = 'log-timestamp';
-            spanTime.innerText = timestamp;
-            li.appendChild(spanTime);
-
-            const spanText = document.createElement('span');
-            if (tipo === "alert") spanText.className = 'log-alert';
-            if (tipo === "data") spanText.className = 'log-data';
-            spanText.innerText = texto;
-            li.appendChild(spanText);
-
-            container.appendChild(li);
-            document.getElementById('telemetry-log').querySelector('.panel-content').scrollTop = container.scrollHeight;
-        }
+        setInterval(updateClock, 1000); updateClock();
 
         const skewCanvas = document.getElementById('skewtCanvas');
         const hodoCanvas = document.getElementById('hodoCanvas');
@@ -127,74 +146,36 @@
             skewCanvas.height = skewCanvas.parentElement.clientHeight;
             hodoCanvas.width = hodoCanvas.parentElement.clientWidth;
             hodoCanvas.height = hodoCanvas.parentElement.clientHeight;
-            const ctx = skewCanvas.getContext('2d');
-            desenharGradeSkewT(ctx, skewCanvas.width, skewCanvas.height);
+            atualizarSimulacao();
         }
         window.addEventListener('resize', resizeCanvases);
 
+        function adicionarLog(texto, tipo = "") {
+            const container = document.getElementById('log-container');
+            const li = document.createElement('li');
+            if (tipo === "alert") li.className = 'log-alert';
+            li.innerHTML = `<span class="log-timestamp">[${new Date().toISOString().substr(11, 8)}]</span> ${texto}`;
+            container.appendChild(li);
+            document.getElementById('telemetry-log').querySelector('.panel-content').scrollTop = container.scrollHeight;
+        }
+
+        function alterarLocalizacao() {
+            const loc = document.getElementById('location-select').value;
+            adicionarLog(`SECTOR_SHIFT: Target coordinates locked onto station [${loc}].`);
+            atualizarSimulacao();
+        }
+
         function desenharGradeSkewT(ctx, w, h) {
             ctx.clearRect(0, 0, w, h);
-            ctx.strokeStyle = '#1e293b';
-            ctx.lineWidth = 1;
-            
+            ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1;
             for(let i = 1; i < 10; i++) {
                 let y = (h / 10) * i;
                 ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
             }
-            
-            ctx.strokeStyle = '#111827';
-            for(let i = -10; i < 20; i++) {
-                let xStart = (w / 10) * i;
-                ctx.beginPath(); ctx.moveTo(xStart, h); ctx.lineTo(xStart + (w * 0.6), 0); ctx.stroke();
-            }
         }
 
-        function plotarLinhasNoSkewT(dadosLinhas, estilo = "solido") {
+        // CALCULO MATEMÁTICO REAL-TIME DO SANDBOX GLOBAL
+        function atualizarSimulacao() {
             const ctx = skewCanvas.getContext('2d');
-            const w = skewCanvas.width;
-            const h = skewCanvas.height;
-            
-            if (estilo === "solido") {
-                desenharGradeSkewT(ctx, w, h);
-            }
-
-            ctx.lineWidth = 2;
-            if (estilo === "pontilhado") {
-                ctx.setLineDash([4, 4]); 
-                ctx.lineWidth = 1.5;
-            } else {
-                ctx.setLineDash([]);
-            }
-
-            // Temperatura
-            ctx.strokeStyle = estilo === "solido" ? "#ef4444" : "#f472b6";
-            ctx.beginPath();
-            dadosLinhas.forEach((camada, index) => {
-                let x = (w * 0.3) + (camada.temp * 4) + ((h - (camada.pressao * h / 1000)) * 0.25);
-                let y = h - (camada.pressao * h / 1000);
-                if (index === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            });
-            ctx.stroke();
-
-            // Ponto de Orvalho
-            ctx.strokeStyle = estilo === "solido" ? "#10b981" : "#22d3ee";
-            ctx.beginPath();
-            dadosLinhas.forEach((camada, index) => {
-                if(camada.orvalho === -9999) return;
-                let x = (w * 0.3) + (camada.orvalho * 4) + ((h - (camada.pressao * h / 1000)) * 0.25);
-                let y = h - (camada.pressao * h / 1000);
-                if (index === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            });
-            ctx.stroke();
-            ctx.setLineDash([]);
-        }
-
-        function processarTextoParaGrafico(textoBruto) {
-            const linhas = textoBruto.split('\n');
-            const dadosArray = [];
-
-            linhas.forEach(linha => {
-                if(linha.startsWith('#') || linha.trim() === '') return;
-                const partes = linha.split(',');
+            const w = skewCanvas.width; const h = skewCanvas.height;
+            const model = document.getElementById('model-select').value;
