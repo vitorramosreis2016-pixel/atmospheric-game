@@ -1,12 +1,70 @@
 {
-  "scenario_id": "caso_01_oklahoma",
-  "risk_category": "HIGH RISK",
-  "risk_color": "#ef4444",
-  "probabilities": {
-    "tornado": "30% (HATCHED // POTENTIAL FOR EF2+TORNADOES)",
-    "wind": "45% (SIGNIFICANT // DAMAGE POTENTIAL > 65 KTS)",
-    "hail": "60% (SIGNIFICANT // HAIL POTENTIAL > 2.0 INCHES)"
+  "meta": {
+    "system": "SPC_CONDITIONAL_INTENSITY_OUTLOOKS",
+    "timeline": "STARTING_2026"
   },
-  "summary": "A severe convective outbreak is expected across portions of the Central Plains this afternoon and evening. Volatile thermodynamic conditions will support long-lived, intense discrete supercells capable of producing violent tornadoes, destructive winds, and giant hail.",
-  "discussion": "DISCUSSION: RAP and HRRR analysis indicates rapid boundary-layer destabilization underway across central Oklahoma. Surface heating combined with rich low-level moisture (surface dewpoints near 72F) is driving SBCAPE values toward 4500 J/kg. A sharpening dryline will serve as the primary convective trigger by 20Z-21Z. Deep-layer shear vectors of 60-70 kts running perpendicular to the boundary will promote highly organized, cellular storm modes. Supercell composite parameters and effective helicity index (EHI) metrics strongly suggest that any discrete cells entering this environment will quickly develop intense low-level mesocyclones with severe tornadic potential."
+  "tornado": {
+    "probabilities": [0.02, 0.05, 0.10, 0.15, 0.30, 0.45, 0.60],
+    "cig_categories": ["<CIG1", "CIG1", "CIG2", "CIG3"],
+    "matrix": [
+      {"prob": 0.02, "cig": "<CIG1", "category": "MRGL", "level": 1, "color": "#008B00"},
+      {"prob": 0.02, "cig": "CIG1",  "category": "MRGL", "level": 1, "color": "#008B00"},
+      {"prob": 0.02, "cig": "CIG2",  "category": "SLGT", "level": 2, "color": "#EEEE00"},
+      {"prob": 0.02, "cig": "CIG3",  "category": "not_used", "level": 0, "color": "#7F7F7F"},
+      
+      {"prob": 0.05, "cig": "<CIG1", "category": "SLGT", "level": 2, "color": "#EEEE00"},
+      {"prob": 0.05, "cig": "CIG1",  "category": "SLGT", "level": 2, "color": "#EEEE00"},
+      {"prob": 0.05, "cig": "CIG2",  "category": "ENH",  "level": 3, "color": "#FFA500"},
+      {"prob": 0.05, "cig": "CIG3",  "category": "not_used", "level": 0, "color": "#7F7F7F"},
+
+      {"prob": 0.10, "cig": "<CIG1", "category": "SLGT", "level": 2, "color": "#EEEE00"},
+      {"prob": 0.10, "cig": "CIG1",  "category": "ENH",  "level": 3, "color": "#FFA500"},
+      {"prob": 0.10, "cig": "CIG2",  "category": "ENH",  "level": 3, "color": "#FFA500"},
+      {"prob": 0.10, "cig": "CIG3",  "category": "ENH",  "level": 3, "color": "#FFA500"},
+
+      {"prob": 0.15, "cig": "<CIG1", "category": "ENH",  "level": 3, "color": "#FFA500"},
+      {"prob": 0.15, "cig": "CIG1",  "category": "ENH",  "level": 3, "color": "#FFA500"},
+      {"prob": 0.15, "cig": "CIG2",  "category": "MDT",  "level": 4, "color": "#FF0000"},
+      {"prob": 0.15, "cig": "CIG3",  "category": "MDT",  "level": 4, "color": "#FF0000"},
+
+      {"prob": 0.30, "cig": "<CIG1", "category": "ENH",  "level": 3, "color": "#FFA500"},
+      {"prob": 0.30, "cig": "CIG1",  "category": "MDT",  "level": 4, "color": "#FF0000"},
+      {"prob": 0.30, "cig": "CIG2",  "category": "HIGH", "level": 5, "color": "#FF00FF"},
+      {"prob": 0.30, "cig": "CIG3",  "category": "HIGH", "level": 5, "color": "#FF00FF"},
+
+      {"prob": 0.45, "cig": "<CIG1", "category": "ENH",  "level": 3, "color": "#FFA500"},
+      {"prob": 0.45, "cig": "CIG1",  "category": "MDT",  "level": 4, "color": "#FF0000"},
+      {"prob": 0.45, "cig": "CIG2",  "category": "HIGH", "level": 5, "color": "#FF00FF"},
+      {"prob": 0.45, "cig": "CIG3",  "category": "HIGH", "level": 5, "color": "#FF00FF"},
+
+      {"prob": 0.60, "cig": "<CIG1", "category": "ENH",  "level": 3, "color": "#FFA500"},
+      {"prob": 0.60, "cig": "CIG1",  "category": "HIGH", "level": 5, "color": "#FF00FF"},
+      {"prob": 0.60, "cig": "CIG2",  "category": "HIGH", "level": 5, "color": "#FF00FF"},
+      {"prob": 0.60, "cig": "CIG3",  "category": "HIGH", "level": 5, "color": "#FF00FF"}
+    ]
+  },
+  "hail_wind_3dir": {
+    "probabilities": [0.05, 0.15, 0.30, 0.45, 0.60],
+    "matrix": [
+      {"prob": 0.05, "cig": "<CIG1", "category": "MRGL", "level": 1, "color": "#008B00"},
+      {"prob": 0.05, "cig": "CIG1",  "category": "MRGL", "level": 1, "color": "#008B00"},
+      {"prob": 0.05, "cig": "CIG2",  "category": "SLGT", "level": 2, "color": "#EEEE00"},
+      
+      {"prob": 0.15, "cig": "<CIG1", "category": "SLGT", "level": 2, "color": "#EEEE00"},
+      {"prob": 0.15, "cig": "CIG1",  "category": "SLGT", "level": 2, "color": "#EEEE00"},
+      {"prob": 0.15, "cig": "CIG2",  "category": "ENH",  "level": 3, "color": "#FFA500"},
+
+      {"prob": 0.30, "cig": "<CIG1", "category": "SLGT", "level": 2, "color": "#EEEE00"},
+      {"prob": 0.30, "cig": "CIG1",  "category": "ENH",  "level": 3, "color": "#FFA500"},
+      {"prob": 0.30, "cig": "CIG2",  "category": "ENH",  "level": 3, "color": "#FFA500"},
+
+      {"prob": 0.45, "cig": "<CIG1", "category": "ENH",  "level": 3, "color": "#FFA500"},
+      {"prob": 0.45, "cig": "CIG1",  "category": "ENH",  "level": 3, "color": "#FFA500"},
+      {"prob": 0.45, "cig": "CIG2",  "category": "MDT",  "level": 4, "color": "#FF0000"},
+
+      {"prob": 0.60, "cig": "<CIG1", "category": "ENH",  "level": 3, "color": "#FFA500"},
+      {"prob": 0.60, "cig": "CIG1",  "category": "MDT",  "level": 4, "color": "#FF0000"},
+      {"prob": 0.60, "cig": "CIG2",  "category": "MDT",  "level": 4, "color": "#FF0000"}
+    ]
+  }
 }
