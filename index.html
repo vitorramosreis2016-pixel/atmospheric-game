@@ -81,12 +81,20 @@
                 </div>
 
                 <div class="menu-title">CONJUNTO DE PREVISÕES NUMÉRICAS ATIVAS:</div>
-                <!-- Ajustado o ID para "model-select" -->
-                <select id="model-select" onchange="atualizarSimulacao()">
-                    <option value="hrrr">HRRR [CONVECTIVE_HIGH_RES]</option>
-                    <option value="monan">MONAN [BRAZILIAN_GLOBAL]</option>
-                    <option value="gfs">GFS [GLOBAL_DETERMINISTIC]</option>
-                </select>
+<select id="model-select" onchange="carregarDadosDoModelo()">
+    <option value="hrrr">HRRR [CONVECTIVE_HIGH_RES]</option>
+    <option value="monan">MONAN [BRAZILIAN_GLOBAL]</option>
+    <option value="gfs">GFS [GLOBAL_DETERMINISTIC]</option>
+</select>
+
+<!-- NOVO SELETOR DE CICLO DE RUN -->
+<div class="menu-title">CICLO OPERACIONAL DA RODADA (RUN):</div>
+<select id="run-select" onchange="carregarDadosDoModelo()">
+    <option value="00z">00:00 UTC (00Z Run)</option>
+    <option value="06z">06:00 UTC (06Z Run)</option>
+    <option value="12z" selected>12:00 UTC (12Z Run)</option>
+    <option value="18z">18:00 UTC (18Z Run)</option>
+</select>
                 
                 <button id="btn-verify" class="verify-btn" onclick="atualizarSimulacao()">
                     LANÇAMENTO DE BALÃO DE RADIOSONDA (VERIFICAR)
