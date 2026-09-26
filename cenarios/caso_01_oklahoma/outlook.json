@@ -1,0 +1,12 @@
+{
+  "scenario_id": "caso_01_oklahoma",
+  "risk_category": "HIGH RISK",
+  "risk_color": "#ef4444",
+  "probabilities": {
+    "tornado": "30% (HATCHED // POTENTIAL FOR EF2+TORNADOES)",
+    "wind": "45% (SIGNIFICANT // DAMAGE POTENTIAL > 65 KTS)",
+    "hail": "60% (SIGNIFICANT // HAIL POTENTIAL > 2.0 INCHES)"
+  },
+  "summary": "A severe convective outbreak is expected across portions of the Central Plains this afternoon and evening. Volatile thermodynamic conditions will support long-lived, intense discrete supercells capable of producing violent tornadoes, destructive winds, and giant hail.",
+  "discussion": "DISCUSSION: RAP and HRRR analysis indicates rapid boundary-layer destabilization underway across central Oklahoma. Surface heating combined with rich low-level moisture (surface dewpoints near 72F) is driving SBCAPE values toward 4500 J/kg. A sharpening dryline will serve as the primary convective trigger by 20Z-21Z. Deep-layer shear vectors of 60-70 kts running perpendicular to the boundary will promote highly organized, cellular storm modes. Supercell composite parameters and effective helicity index (EHI) metrics strongly suggest that any discrete cells entering this environment will quickly develop intense low-level mesocyclones with severe tornadic potential."
+}
