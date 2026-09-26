@@ -1,5 +1,5 @@
 // ====================================================================
-// CORE METEOROLOGICAL ENGINE - DATA SUITE MODEL PARSER (2026)
+// CORE METEOROLOGICAL ENGINE - MULTI-RUN MODEL PARSER (2026 BASELINE)
 // ====================================================================
 
 let spcMatrix = null;
@@ -21,52 +21,52 @@ async function initSimulator() {
 }
 
 /**
- * Faz o fetch dinâmico do arquivo de texto do modelo selecionado
+ * Faz o fetch dinâmico combinando o Modelo Selecionado + o Horário da Rodada (Run)
  */
 async function carregarDadosDoModelo() {
     const seletorModelo = document.getElementById('model-select');
-    if (!seletorModelo) return;
+    const seletorRun = document.getElementById('run-select');
+    if (!seletorModelo || !seletorRun) return;
 
-    const modelo = seletorModelo.value.toLowerCase(); // hrrr, monan, gfs
-    const caminhoArquivo = `modelos/${modelo}.txt`;
+    const modelo = seletorModelo.value.toLowerCase(); // ex: hrrr
+    const run = seletorRun.value.toLowerCase();       // ex: 12z
+    
+    // Constrói o caminho combinando o modelo com a rodada horária
+    const caminhoArquivo = `modelos/${modelo}_${run}.txt`;
 
     const logList = document.getElementById('log-container');
     const time = new Date().toISOString().substr(11, 8);
 
     try {
         const response = await fetch(caminhoArquivo);
-        if (!response.ok) throw new Error(`Arquivo ${caminhoArquivo} não encontrado.`);
+        if (!response.ok) throw new Error(`Rodada ${modelo.toUpperCase()}_${run.toUpperCase()} indisponível.`);
         
         const textoBruto = await response.text();
-        
-        // Faz a leitura e extração dos parâmetros de dentro do arquivo txt
         const parametros = extrairParametrosDoTexto(textoBruto);
 
-        // Atualiza os inputs numéricos na tela com os dados reais do arquivo
+        // Atualiza os inputs numéricos na interface com a telemetria da rodada
         if (parametros.temp !== null) document.getElementById('input-temp').value = parametros.temp;
         if (parametros.dew !== null) document.getElementById('input-dew').value = parametros.dew;
         if (parametros.shear !== null) document.getElementById('input-shear').value = parametros.shear;
 
         if (logList) {
-            logList.innerHTML += `<li><span class="log-timestamp">[${time}]</span> <span style="color:#38bdf8;">MODEL_LOAD:</span> ${modelo.toUpperCase()}.txt processado com sucesso.</li>`;
+            logList.innerHTML += `<li><span class="log-timestamp">[${time}]</span> <span style="color:#38bdf8;">DATASTREAM_SUCCESS:</span> ${modelo.toUpperCase()} ${run.toUpperCase()} injetado.</li>`;
         }
 
-        // Executa o motor físico com os novos dados importados
+        // Atualiza o processamento físico
         updateSimulationEngine();
 
     } catch (error) {
-        console.error("[ERROR]", error.message);
+        console.warn("[WARNING]", error.message);
         if (logList) {
-            logList.innerHTML += `<li><span class="log-timestamp">[${time}]</span> <span class="log-alert">[ERROR]</span> Falha ao ler modelos/${modelo}.txt. Usando inputs manuais.</li>`;
+            logList.innerHTML += `<li><span class="log-timestamp">[${time}]</span> <span style="color:#ffa500;">[WARN]</span> Arquivo ${modelo}_${run}.txt ausente. Rodando modo livre.</li>`;
         }
-        // Fallback: Se o arquivo não existir, roda com o que já estiver digitado
         updateSimulationEngine();
     }
 }
 
 /**
  * Função Parser: Vasculha as linhas do arquivo de texto atrás de tags chave
- * Exemplo esperado dentro do txt: "TEMP=26.4" ou "SHEAR=52"
  */
 function extrairParametrosDoTexto(texto) {
     const linhas = texto.split('\n');
@@ -78,8 +78,8 @@ function extrairParametrosDoTexto(texto) {
         if (linhaLimpa.includes('TEMP=')) {
             dados.temp = parseFloat(linhaLimpa.split('TEMP=')[1]);
         }
-        if (linhaLimpa.includes('DEW=') || linhaLimpa.includes('DEWPOINT=')) {
-            dados.dew = parseFloat(linhaLimpa.split('DEW=')[1] || linhaLimpa.split('DEWPOINT=')[1]);
+        if (linhaLimpa.includes('DEW=')) {
+            dados.dew = parseFloat(linhaLimpa.split('DEW=')[1]);
         }
         if (linhaLimpa.includes('SHEAR=')) {
             dados.shear = parseFloat(linhaLimpa.split('SHEAR=')[1]);
@@ -139,7 +139,9 @@ function updateSimulationEngine() {
     const shear = parseFloat(document.getElementById('input-shear').value) || 0;
     
     const seletorModelo = document.getElementById('model-select');
-    const model = seletorModelo ? seletorModelo.value.toUpperCase() : "MANUAL";
+    const seletorRun = document.getElementById('run-select');
+    const modelStr = seletorModelo ? seletorModelo.value.toUpperCase() : "MANUAL";
+    const runStr = seletorRun ? seletorRun.value.toUpperCase() : "00Z";
 
     const indices = calculateAtmosphericIndices(t, td, shear);
     const cig = getCIGLevel(indices);
@@ -173,7 +175,7 @@ function updateSimulationEngine() {
     if (textDiv) {
         textDiv.innerHTML = `
             <p style="color: #38bdf8; font-weight: bold; margin-bottom: 8px;">[MONITORAMENTO DE MATRIZ CONVECTIVA DINÂMICA]</p>
-            <p>FONTE DE DADOS ATIVA: <span style="color: #ffffff;">PROJEÇÃO MODELO ${model}</span></p>
+            <p>FONTE DE DADOS ATIVA: <span style="color: #ffffff;">PROJEÇÃO MODELO ${modelStr} [RUN ${runStr}]</span></p>
             <p>SBCAPE CALCULADO: <span style="color: #00ff66;">${indices.cape} J/kg</span> | SBCIN: <span style="color: #ef4444;">-${indices.cin} J/kg</span></p>
             <p>PARAMETRO DE TORNADO SIGNIFICATIVO (STP): <span style="color: #ffffff;">${indices.stp}</span></p>
             <p>PARAMETRO DE GRANIZO SIGNIFICATIVO (SHIP): <span style="color: #ffffff;">${indices.ship}</span></p>
@@ -190,5 +192,5 @@ function updateSimulationEngine() {
     }
 }
 
-// Vincula o gatilho inicial
+// Vincula o gatilho inicial ao carregar a página
 window.addEventListener('DOMContentLoaded', initSimulator);
