@@ -94,7 +94,7 @@
         <section id="map-view" class="panel">
             <div class="panel-header">DYNAMIC CONVECTIVE OUTLOOK PARAMETERS</div>
             <div class="panel-content" style="display: flex; flex-direction: column; gap: 15px;">
-                <div id="outlook-risk-badge" style="padding: 10px; text-align: center; font-weight: bold; font-size: 14px; letter-spacing: 2px;">
+                <div id="outlook-risk-badge" style="padding: 10px; text-align: center; font-weight: bold; font-size: 14px; letter-spacing: 2px; color: #000; background-color: #222;">
                     CALCULATING RISK...
                 </div>
                 <div style="border: 1px solid #1e293b; padding: 10px; background-color: #0c1017; font-size: 11px; line-height: 1.4;">
@@ -132,50 +132,33 @@
     </main>
 
     <script>
+        // Relógio global no padrão UTC/Z-TIME para estações meteorológicas
         function updateClock() {
             const now = new Date();
             document.getElementById('sys-clock').innerText = now.toISOString().substr(11, 8);
         }
-        setInterval(updateClock, 1000); updateClock();
+        setInterval(updateClock, 1000); 
+        updateClock();
 
+        // Referências iniciais para os Canvas (Gráficos do SHARPpy)
         const skewCanvas = document.getElementById('skewtCanvas');
         const hodoCanvas = document.getElementById('hodoCanvas');
-        
-        function resizeCanvases() {
-            skewCanvas.width = skewCanvas.parentElement.clientWidth;
-            skewCanvas.height = skewCanvas.parentElement.clientHeight;
-            hodoCanvas.width = hodoCanvas.parentElement.clientWidth;
-            hodoCanvas.height = hodoCanvas.parentElement.clientHeight;
-            atualizarSimulacao();
-        }
-        window.addEventListener('resize', resizeCanvases);
 
-        function adicionarLog(texto, tipo = "") {
-            const container = document.getElementById('log-container');
-            const li = document.createElement('li');
-            if (tipo === "alert") li.className = 'log-alert';
-            li.innerHTML = `<span class="log-timestamp">[${new Date().toISOString().substr(11, 8)}]</span> ${texto}`;
-            container.appendChild(li);
-            document.getElementById('telemetry-log').querySelector('.panel-content').scrollTop = container.scrollHeight;
-        }
-
+        // Gerenciador de mudança de localidade do simulador
         function alterarLocalizacao() {
-            const loc = document.getElementById('location-select').value;
-            adicionarLog(`SECTOR_SHIFT: Target coordinates locked onto station [${loc}].`);
+            console.log("[SYSTEM] Localidade alterada para: " + document.getElementById('location-select').value);
             atualizarSimulacao();
         }
 
-        function desenharGradeSkewT(ctx, w, h) {
-            ctx.clearRect(0, 0, w, h);
-            ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1;
-            for(let i = 1; i < 10; i++) {
-                let y = (h / 10) * i;
-                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        // Função de disparo que se conecta com o motor no simulator.js
+        function atualizarSimulacao() {
+            if (typeof updateSimulationEngine === "function") {
+                updateSimulationEngine();
             }
         }
+    </script>
 
-        // CALCULO MATEMÁTICO REAL-TIME DO SANDBOX GLOBAL
-        function atualizarSimulacao() {
-            const ctx = skewCanvas.getContext('2d');
-            const w = skewCanvas.width; const h = skewCanvas.height;
-            const model = document.getElementById('model-select').value;
+    <!-- INJEÇÃO DO MOTOR SERVERLESS DO GITHUB PAGES -->
+    <script src="simulator.js"></script>
+</body>
+</html>
