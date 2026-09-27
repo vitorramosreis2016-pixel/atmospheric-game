@@ -3,7 +3,7 @@
 // ====================================================================
 
 let spcMatrix = null;
-const LEVELS_PRE =;
+const LEVELS_PRE = [1000, 925, 850, 700, 500, 400, 300, 250, 200, 150, 100];
 
 /**
  * Inicializa o simulador e carrega as matrizes bases
@@ -207,7 +207,7 @@ function drawSkewTBackground(ctx, w, h) {
     ctx.fillStyle = "#000000";
     ctx.fillRect(0, 0, w, h);
 
-    const pressaoLinhas =;
+    const pressaoLinhas = [1000, 850, 700, 500, 300, 200, 100];
     ctx.strokeStyle = "#1e293b";
     ctx.lineWidth = 1;
     ctx.font = "9px monospace";
@@ -238,7 +238,7 @@ function drawSkewTBackground(ctx, w, h) {
 }
 
 function drawSoundingLines(ctx, tSurf, tdSurf, w, h) {
-    const niveis =;
+    const niveis = [1000, 850, 700, 500, 300, 200, 100];
     let pontosTemp = [];
     let pontosDew = [];
 
