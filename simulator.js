@@ -255,3 +255,78 @@ function drawSoundingLines(ctx, tSurf, tdSurf, w, h) {
     ctx.beginPath();
     ctx.moveTo(pontosTemp[0].x, pontosTemp[0].y);
     for (let i = 1; i < pontosTemp.length; i++) {
+
+    // ====================================================================
+// FLUXO OPERACIONAL: LANÇAMENTO DE BALÃO DE RADIOSONDA (VERIFICAR)
+// ====================================================================
+
+/**
+ * Simula a ascensão física do balão de radiosonda pela troposfera
+ */
+function dispararLancamentoBalao() {
+    const logList = document.getElementById('log-container');
+    const botao = document.getElementById('btn-verify');
+    
+    if (!logList || !botao) return;
+
+    // Bloqueia o botão durante a subida para evitar cliques duplos
+    botao.disabled = true;
+    botao.style.borderColor = "#64748b";
+    botao.style.color = "#64748b";
+    botao.innerText = "BALÃO EM ASCENSÃO EM TEMPO REAL...";
+
+    // Limpa a tela central temporariamente para dar suspense técnico
+    document.getElementById('outlook-risk-badge').innerText = "COLETANDO TELEMETRIA DO BALÃO...";
+    document.getElementById('outlook-risk-badge').style.backgroundColor = "#0c1017";
+    document.getElementById('outlook-risk-badge').style.color = "#38bdf8";
+    document.getElementById('outlook-text').innerHTML = `<p style="color: #ffff00;">[SISTEMA EM AGUARDO] Coletando gradientes térmicos verticais via sensor de rádio...</p>`;
+
+    // Níveis de pressão que o balão vai cruzando na subida
+    const niveisSubida =;
+    let passoAtual = 0;
+
+    // Dispara o ciclo de subida a cada 400 milissegundos (Efeito terminal rápido)
+    const intervaloBalao = setInterval(() => {
+        const time = new Date().toISOString().substr(11, 8);
+        
+        if (passoAtual < niveisSubida.length) {
+            const pAtuais = niveisSubida[passoAtual];
+            
+            // Injeta o log da subida no painel inferior
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="log-timestamp">[${time}]</span> <span style="color:#38bdf8;">TELEMETRIA_BALÃO:</span> Altitude de pressão atingida -> <span style="color:#ffffff;">${pAtuais}mb</span> [OK]`;
+            logList.appendChild(li);
+            
+            // Rola os logs para baixo automaticamente
+            logList.parentElement.scrollTop = logList.parentElement.scrollHeight;
+            while (logList.children.length > 5) logList.removeChild(logList.firstChild);
+
+            passoAtual++;
+        } else {
+            // O balão estourou no topo da atmosfera (Fim da coleta)
+            clearInterval(intervaloBalao);
+            
+            const timeFim = new Date().toISOString().substr(11, 8);
+            const liFim = document.createElement('li');
+            liFim.innerHTML = `<span class="log-timestamp">[${timeFim}]</span> <span style="color:#00ff66;">AUDIT_SUCCESS:</span> Amostragem vertical concluída. Processando instabilidade...`;
+            logList.appendChild(liFim);
+
+            // Restaura o botão original
+            botao.disabled = false;
+            botao.style.borderColor = "#38bdf8";
+            botao.style.color = "#38bdf8";
+            botao.innerText = "LANÇAMENTO DE BALÃO DE RADIOSONDA (VERIFICAR)";
+
+            // Computa a física e plota o Skew-T final na tela
+            updateSimulationEngine();
+        }
+    }, 400);
+}
+
+// Conecta o clique do botão assim que a página estiver totalmente carregada
+window.addEventListener('DOMContentLoaded', () => {
+    const botao = document.getElementById('btn-verify');
+    if (botao) {
+        botao.onclick = dispararLancamentoBalao;
+    }
+});
