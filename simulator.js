@@ -13,7 +13,7 @@ async function initSimulator() {
         spcMatrix = await response.json();
         console.log("[SYSTEM] Matriz Conditional Intensity Outlooks SPC 2026 injetada.");
         
-        // Dispara a carga inicial do modelo padrão
+        // Carrega o arquivo do modelo padrão de forma silenciosa na inicialização
         await carregarDadosDoModelo();
     } catch (error) {
         console.error("[ERROR] Falha crítica ao carregar o arquivo outlook.json:", error);
